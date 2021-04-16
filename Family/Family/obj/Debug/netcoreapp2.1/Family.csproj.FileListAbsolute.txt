@@ -1,0 +1,11 @@
+D:\Code\LearningTestProject\Family\Family\Family\obj\Debug\netcoreapp2.1\Family.csprojAssemblyReference.cache
+D:\Code\LearningTestProject\Family\Family\Family\obj\Debug\netcoreapp2.1\Family.csproj.CoreCompileInputs.cache
+D:\Code\LearningTestProject\Family\Family\Family\obj\Debug\netcoreapp2.1\Family.AssemblyInfoInputs.cache
+D:\Code\LearningTestProject\Family\Family\Family\obj\Debug\netcoreapp2.1\Family.AssemblyInfo.cs
+D:\Code\LearningTestProject\Family\Family\Family\bin\Debug\netcoreapp2.1\geektrust.deps.json
+D:\Code\LearningTestProject\Family\Family\Family\bin\Debug\netcoreapp2.1\geektrust.runtimeconfig.json
+D:\Code\LearningTestProject\Family\Family\Family\bin\Debug\netcoreapp2.1\geektrust.runtimeconfig.dev.json
+D:\Code\LearningTestProject\Family\Family\Family\bin\Debug\netcoreapp2.1\geektrust.dll
+D:\Code\LearningTestProject\Family\Family\Family\bin\Debug\netcoreapp2.1\geektrust.pdb
+D:\Code\LearningTestProject\Family\Family\Family\obj\Debug\netcoreapp2.1\geektrust.dll
+D:\Code\LearningTestProject\Family\Family\Family\obj\Debug\netcoreapp2.1\geektrust.pdb
