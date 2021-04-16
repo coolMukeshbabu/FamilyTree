@@ -1,0 +1,14 @@
+D:\Code\Learning Test Project\Logical Improve\FamilyTreeCodingTest\FamilyTreeCodingTest\bin\Debug\FamilyTreeCodingTest.exe.config
+D:\Code\Learning Test Project\Logical Improve\FamilyTreeCodingTest\FamilyTreeCodingTest\bin\Debug\FamilyTreeCodingTest.exe
+D:\Code\Learning Test Project\Logical Improve\FamilyTreeCodingTest\FamilyTreeCodingTest\bin\Debug\FamilyTreeCodingTest.pdb
+D:\Code\Learning Test Project\Logical Improve\FamilyTreeCodingTest\FamilyTreeCodingTest\obj\Debug\FamilyTreeCodingTest.csprojAssemblyReference.cache
+D:\Code\Learning Test Project\Logical Improve\FamilyTreeCodingTest\FamilyTreeCodingTest\obj\Debug\FamilyTreeCodingTest.csproj.CoreCompileInputs.cache
+D:\Code\Learning Test Project\Logical Improve\FamilyTreeCodingTest\FamilyTreeCodingTest\obj\Debug\FamilyTreeCodingTest.exe
+D:\Code\Learning Test Project\Logical Improve\FamilyTreeCodingTest\FamilyTreeCodingTest\obj\Debug\FamilyTreeCodingTest.pdb
+D:\Code\LearningTestProject\LogicalImprove\FamilyTreeCodingTest\FamilyTreeCodingTest\bin\Debug\FamilyTreeCodingTest.exe.config
+D:\Code\LearningTestProject\LogicalImprove\FamilyTreeCodingTest\FamilyTreeCodingTest\bin\Debug\FamilyTreeCodingTest.exe
+D:\Code\LearningTestProject\LogicalImprove\FamilyTreeCodingTest\FamilyTreeCodingTest\bin\Debug\FamilyTreeCodingTest.pdb
+D:\Code\LearningTestProject\LogicalImprove\FamilyTreeCodingTest\FamilyTreeCodingTest\obj\Debug\FamilyTreeCodingTest.csprojAssemblyReference.cache
+D:\Code\LearningTestProject\LogicalImprove\FamilyTreeCodingTest\FamilyTreeCodingTest\obj\Debug\FamilyTreeCodingTest.csproj.CoreCompileInputs.cache
+D:\Code\LearningTestProject\LogicalImprove\FamilyTreeCodingTest\FamilyTreeCodingTest\obj\Debug\FamilyTreeCodingTest.exe
+D:\Code\LearningTestProject\LogicalImprove\FamilyTreeCodingTest\FamilyTreeCodingTest\obj\Debug\FamilyTreeCodingTest.pdb
