@@ -9,54 +9,58 @@ namespace FamilyTreeCodingTest
 {
     class Program
     {
-        //static readonly string textFile = @"D:\Code\Learning Test Project\Logical Improve\FamilyTreeCodingTest\FamilyTreeCodingTest\inputFile.txt";
         static void Main(string[] args)
         {
             List<Input> listOfInputs = new List<Input>();
 
-            Family family = new Family(GetMembersV2());
-            //  Console.WriteLine("Enter path of input text file :");
-            //string textFile = Console.ReadLine();
+            Family family = new Family(GetMembers());
             string textFile = args[0];
-            Console.Write(textFile);
+
             if (File.Exists(textFile))
             {
+                List<string> listOfInputInstrutions = new List<string>();
                 string text = File.ReadAllText(textFile);
                 string[] lines = File.ReadAllLines(textFile);
                 foreach (string line in lines)
                 {
-                    List<string> numbers = line.Split(' ').ToList<string>();
-                    Input input = new Input();
-                    input.action = numbers[0];
-                    input.name = numbers[1];
-                    input.relationship = numbers[2];
-                    listOfInputs.Add(input);
+                    listOfInputInstrutions.Add(line);                  
                 }
-                HandleInputs(listOfInputs,family);
+                HandleInputs(listOfInputInstrutions, family);
             }
             else
             {
                 Console.WriteLine("File doesn't not exists");
                 Console.ReadLine();
             }
-
-
+            
         }
 
-        public static void HandleInputs(List<Input> inputList,Family family)
+        public static void HandleInputs(List<string> inputIntrucations,Family family)
         {
-            if(inputList.Count>0)
+            if(inputIntrucations.Count>0)
             {
-                foreach(var input in inputList)
+                foreach(var input in inputIntrucations)
                 {
-                    switch(input.action)
+                    List<string> inputLine = input.Split(' ').ToList<string>();
+                    string action = inputLine[0];
+
+                    switch (action)
                     {
                         case "GET_RELATIONSHIP":
-                          List<Member> members =  family.GetRelativeNameByRelationship(input.name, input.relationship);
-                            family.PrintMembers(members);
+                            string memberName = inputLine[1];
+                            string relationship = inputLine[2];
+                        List<Member> members =  family.GetRelativeNameByRelationship(memberName, relationship);
+                        family.PrintMembers(members);
                             break;
-                          
-                            
+
+                        case "ADD_CHILD":
+                            string motherName = inputLine[1];
+                            string childName = inputLine[2];
+                            string gender = inputLine[3];
+                            Member member = new Member(childName,gender,"",motherName,"");
+                            string status = family.AddMember(motherName, member);
+                            Console.Write(status);
+                           break;
                     }
                 }
             }
@@ -65,22 +69,13 @@ namespace FamilyTreeCodingTest
 
         public class Family
         {
-            static List<Member> listOfMember = new List<Member>();
+            private List<Member> listOfMember = new List<Member>();
 
             public Family(List<Member> members)
             {
                 listOfMember = members;
             }
-            public void GetInput()
-            {
-                Console.WriteLine("Looking for relatives names in Family Tree?");
-                Console.WriteLine("Enter member name :");
-                string memberName = Console.ReadLine();
-                Console.WriteLine("Enter RelationShip :");
-                string relationship = Console.ReadLine();
-                PrintMembers(GetRelativeNameByRelationship(memberName, relationship));
-            }
-            
+                     
             public void PrintMembers(List<Member> membersToPrint)
             {
                 if (membersToPrint.Count > 0)
@@ -94,7 +89,8 @@ namespace FamilyTreeCodingTest
                 }
                 else
                 {
-                    Console.WriteLine("NONE");
+                    Console.Write("\n");
+                    Console.Write("PERSON_NOT_FOUND");
                 }
                
             }
@@ -291,14 +287,21 @@ namespace FamilyTreeCodingTest
                 return listOfMothersSiblings;
             }
 
-            public void AddMember(string parentName, Member member)
+            public string AddMember(string parentName, Member member)
             {
-                //Check parent is there?
-                var parent = listOfMember.Where(obj => obj.fatherName.Equals(parentName) || obj.motherName.Equals(parentName)).FirstOrDefault();
+                string returnMessage = "";
+                var parent = listOfMember.Where(obj => obj.motherName.Equals(parentName)).FirstOrDefault();
                 if (parent != null)
                 {
+                    member.fatherName = parent.name;
                     listOfMember.Add(member);
+                    returnMessage = "CHILD_ADDITION_SUCCEEDED";
                 }
+                else
+                {
+                    returnMessage = "CHILD_ADDITION_FAILED";
+                }
+                return returnMessage;
             }
 
             public List<Member> GetRelativeNameByRelationship(string member, string relationship)
@@ -306,43 +309,41 @@ namespace FamilyTreeCodingTest
                 List<Member> filteredList = new List<Member>();
                 switch (relationship)
                 {
-                    case "Sons":
+                    case "Son":
                         filteredList = GetListOfSons(member);
                         break;
-                    case "Daughters":
+                    case "Daughter":
                         filteredList = GetListOfDaughter(member);
                         break;
                     case "Siblings":
                         filteredList = GetListOfSiblings(member);
                         break;
-                    case "Sister-In-Laws":
+                    case "Sister-In-Law":
                         filteredList = GetListOfSisInLows(member);
                         break;
-                    case "Brother-In-Laws":
+                    case "Brother-In-Law":
                         filteredList = GetListOfBroInLows(member);
                         break;
-                    case "Paternal-Uncles":
+                    case "Paternal-Uncle":
                         filteredList = GetListOfPaternalUncles(member);
                         break;
-                    case "Maternal-Uncles":
+                    case "Maternal-Uncle":
                         filteredList = GetListOfMaternalUncles(member);
                         break;
-                    case "Paternal-Aunts":
+                    case "Paternal-Aunt":
                         filteredList = GetListOfPaternalAunts(member);
                         break;
-                    case "Maternal-Aunts":
+                    case "Maternal-Aunt":
                         filteredList = GetListOfMaternalAunts(member);
                         break;
-
-
+                        
                 }
                 return filteredList;
             }
             
         }
 
-
-        public static List<Member> GetMembersV2()
+        public static List<Member> GetMembers()
         {
             List<Member> members = new List<Member>();
 
@@ -395,16 +396,14 @@ namespace FamilyTreeCodingTest
         {
             public string name { get; set; }
             public string gender { get; set; }
-            public string level { get; set; }
             public string motherName { get; set; }
             public string fatherName { get; set; }
             public string spouseName { get; set; }
 
-            public Member(string name, string gender, string level)
+            public Member(string name, string gender)
             {
                 this.name = name;
                 this.gender = gender;
-                this.level = level;
             }
 
             public Member(string name, string gender, string fatherName, string motherName, string spouseName)
@@ -418,12 +417,11 @@ namespace FamilyTreeCodingTest
 
 
         }
-
         public class Input {
             public string action { get; set; }
             public string name { get; set; }
+            public string motherName { get; set; }
             public string relationship { get; set; }
-            public string gender { get; set; }
         }
         
         //public static LinkedList<Member> GetMembers()
