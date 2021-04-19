@@ -19,17 +19,17 @@ namespace Family
         {
             if (membersToPrint.Count > 0)
             {
-                Console.Write("\n");
                 foreach (Member member in membersToPrint)
                 {
                     Console.Write(member.name + " ");
                 }
+                Console.Write("\n");
 
             }
             else
             {
                 Console.Write("\n");
-                Console.Write("PERSON_NOT_FOUND");
+                Console.Write("NONE");
             }
 
         }
@@ -41,7 +41,7 @@ namespace Family
             {
                 if (member.motherName.Equals(parentName) || member.fatherName.Equals(parentName))
                 {
-                    if (member.gender == "male")
+                    if (member.gender == "Male")
                     {
                         listSons.Add(member);
                     }
@@ -57,7 +57,7 @@ namespace Family
             {
                 if (member.motherName.Equals(parentName) || member.fatherName.Equals(parentName))
                 {
-                    if (member.gender == "female")
+                    if (member.gender == "Female")
                     {
                         filteredList.Add(member);
                     }
@@ -74,7 +74,7 @@ namespace Family
             var member = members.Where(obj => obj.name.Equals(name)).FirstOrDefault();
             if (member != null)
             {
-                listSiblings = members.Where(obj => obj.motherName.Equals(member.motherName)).ToList();
+                listSiblings = members.Where(obj => obj.motherName.Equals(member.motherName) && member.motherName!="").ToList();
                 listSiblings.Remove(member);
 
             }
@@ -82,7 +82,7 @@ namespace Family
 
         }
 
-        public List<Member> GetSisterInLows(string name)
+        public List<Member> GetSisterInLaws(string name)
         {
             List<Member> listSisInLaws = new List<Member>();
 
@@ -90,19 +90,35 @@ namespace Family
             var member = members.Where(obj => obj.name.Equals(name)).FirstOrDefault();
             if (member != null)
             {
-                var listSiblings = members.Where(obj => obj.motherName.Equals(member.motherName) && obj.spouseName != "" && obj.gender.Equals("male")).ToList();
-                listSiblings.Remove(member);
-
-                foreach (Member _member in members)
+                //Spounse's siblings
+                var spouse = members.Where(obj => obj.name.Equals(member.spouseName)).FirstOrDefault();
+                if(spouse!=null)
                 {
-                    var spouse = members.Where(obj => obj.name.Equals(_member.spouseName)).FirstOrDefault();
-                    if (spouse != null)
+                    var listSiblings = GetSiblings(spouse.name);
+                    if(listSiblings.Count>0)
                     {
-                        listSisInLaws.Add(spouse);
+                        listSisInLaws = listSiblings.Where(obj => obj.gender == "Female").ToList();
+                       
                     }
                 }
 
+                //Get list of siblings's wives
+                var listSibling = GetSiblings(member.name);
+                if(listSibling.Count>0)
+                {
+                    foreach(var _member in listSibling )
+                    {
+                        var _spouse = members.Where(obj => obj.name.Equals(_member.spouseName)).FirstOrDefault();
+                        if (_spouse != null)
+                        {
+                            listSisInLaws.Add(_spouse);
+                        }
+                    }
+                }
+                
             }
+
+
             return listSisInLaws;
         }
 
@@ -114,7 +130,7 @@ namespace Family
             var member = members.Where(obj => obj.name.Equals(name)).FirstOrDefault();
             if (member != null)
             {
-                var listSiblings = members.Where(obj => obj.motherName.Equals(member.motherName) && obj.spouseName != "" && obj.gender.Equals("female")).ToList();
+                var listSiblings = members.Where(obj => obj.motherName.Equals(member.motherName) && obj.spouseName != "" && obj.gender.Equals("Female")).ToList();
                 listSiblings.Remove(member);
 
                 foreach (Member _member in listSiblings)
@@ -145,7 +161,7 @@ namespace Family
                     listOfFathersSiblings = GetSiblings(father.name);
                     if (listOfFathersSiblings.Count > 0)
                     {
-                        listOfFathersSiblings = listOfFathersSiblings.Where(obj => obj.gender != "female").ToList();
+                        listOfFathersSiblings = listOfFathersSiblings.Where(obj => obj.gender != "Female").ToList();
                         listOfFathersSiblings.Remove(father);
                     }
                 }
@@ -169,7 +185,7 @@ namespace Family
                     listOfMothersSiblings = GetSiblings(mother.name);
                     if (listOfMothersSiblings.Count > 0)
                     {
-                        listOfMothersSiblings = listOfMothersSiblings.Where(obj => obj.gender != "female").ToList();
+                        listOfMothersSiblings = listOfMothersSiblings.Where(obj => obj.gender != "Female").ToList();
                         listOfMothersSiblings.Remove(mother);
                     }
                 }
@@ -180,26 +196,23 @@ namespace Family
 
         private List<Member> GetPaternalAunts(string name)
         {
-            List<Member> listOfPaternalAunts = new List<Member>();
+            List<Member> listPaternalAunts = new List<Member>();
 
-            //Get name of mother 
             var member = members.Where(obj => obj.name.Equals(name)).FirstOrDefault();
             if (member != null)
             {
-                //Getting his mother's entry 
                 var father = members.Where(obj => obj.name.Equals(member.fatherName)).FirstOrDefault();
                 if (father != null)
                 {
-                    listOfPaternalAunts = GetSiblings(father.name);
-                    if (listOfPaternalAunts.Count > 0)
+                    var fathersSiblings = GetSiblings(father.name);
+                    if (fathersSiblings.Count > 0)
                     {
-                        listOfPaternalAunts = listOfPaternalAunts.Where(obj => obj.gender != "male").ToList();
-                        //listOfPaternalAunts.Remove(mother);
+                        listPaternalAunts = fathersSiblings.Where(obj => obj.gender == "Female").ToList();
                     }
                 }
 
             }
-            return listOfPaternalAunts;
+            return listPaternalAunts;
         }
 
         private List<Member> GetMaternalAunts(string name)
@@ -217,7 +230,7 @@ namespace Family
                     listOfMothersSiblings = GetSiblings(mother.name);
                     if (listOfMothersSiblings.Count > 0)
                     {
-                        listOfMothersSiblings = listOfMothersSiblings.Where(obj => obj.gender != "male").ToList();
+                        listOfMothersSiblings = listOfMothersSiblings.Where(obj => obj.gender != "Male").ToList();
                         listOfMothersSiblings.Remove(mother);
                     }
                 }
@@ -226,13 +239,13 @@ namespace Family
             return listOfMothersSiblings;
         }
 
-        public string AddMember(string parentName, Member member)
+        public string AddMember(string motherName, Member member)
         {
             string returnMessage = "";
-            var parent = members.Where(obj => obj.motherName.Equals(parentName)).FirstOrDefault();
-            if (parent != null)
+            var mother = members.Where(obj => obj.name.Equals(motherName) && obj.gender.Equals("Female")).FirstOrDefault();
+            if (mother != null)
             {
-                member.fatherName = parent.name;
+                member.fatherName = mother.spouseName;
                 members.Add(member);
                 returnMessage = "CHILD_ADDITION_SUCCEEDED";
             }
@@ -258,7 +271,7 @@ namespace Family
                     filteredList = GetSiblings(member);
                     break;
                 case "Sister-In-Law":
-                    filteredList = GetSisterInLows(member);
+                    filteredList = GetSisterInLaws(member);
                     break;
                 case "Brother-In-Law":
                     filteredList = GetBrotherInLows(member);
@@ -280,5 +293,16 @@ namespace Family
             return filteredList;
         }
 
+        public bool IsMemberExists(string memberName)
+        {
+            bool isExist = false;
+            var _member = members.Where(obj => obj.name.Equals(memberName)).FirstOrDefault();
+            if(_member!=null)
+            {
+                isExist = true;
+            }
+            return isExist;
+        }
+       
     }
 }
