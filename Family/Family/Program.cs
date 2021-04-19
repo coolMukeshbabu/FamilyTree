@@ -12,7 +12,6 @@ namespace Family
         static void Main(string[] args)
         {
             FamilyHelper familyHelper = new FamilyHelper();
-
             Family family = new Family(familyHelper.GetMembers());
 
             //Reading command line params to read path of file
@@ -23,11 +22,42 @@ namespace Family
             data.Add("FilePath", filePath);
             List<string> inputInstructions = GetInputInstrutions("File", data);
 
+            //Parsing input instruction to better and readable format
             List<InputIntruction> parsedInputIntructions = ParseInputIntructions(inputInstructions);
 
-            ExecuteInputInstructions(parsedInputIntructions, family);
+            //Executing the intruction and printing the result
+            List<Output> outputs = ExecuteInputInstructions(parsedInputIntructions, family);
+            if(outputs.Count>0)
+            {
+                foreach (var output in outputs)
+                {
+                    if (output.status == "SUCCESS")
+                    {
+                        if (output.data != null)
+                        {
+                            if (output.data.Count>0)
+                            {
+                                family.PrintMembers(output.data);
+                            }
+                            else
+                            {
+                                Console.WriteLine(output.message);
 
-           // ParseInputInstructionAndExecute(inputInstructions, family);
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine(output.message);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine(output.message);
+                    }
+                }
+                Console.ReadLine();
+            }
+
         }
 
         private static List<string> GetInputInstrutions(string source, Dictionary<string,string> data)
@@ -52,20 +82,43 @@ namespace Family
 
             return inputInstrutions;
         }
-        
-        public static void ExecuteInputInstructions(List<InputIntruction> inputIntrucations, Family family)
+       
+        public static List<Output> ExecuteInputInstructions(List<InputIntruction> inputIntrucations, Family family)
         {
+            List<Output> listOutputs = new List<Output>();
             if (inputIntrucations.Count > 0)
             {
                 foreach (var input in inputIntrucations)
                 {
+                    Output output = new Output();
+
                     switch (input.action)
                     {
                         case "GET_RELATIONSHIP":
                             string memberName = input.data["name"];
                             string relationship = input.data["relationship"];
-                            List<Member> members = family.GetRelativeNameByRelationship(memberName, relationship);
-                            family.PrintMembers(members);
+                            //Check whether given member is exists
+                            bool isMemberExists = family.IsMemberExists(memberName);
+                            if (isMemberExists)
+                            {
+                                List<Member> members = family.GetRelativeNameByRelationship(memberName, relationship);
+                                output.message = "SUCCESS";
+                                output.status = "SUCCESS";
+                                if (members.Count > 0)
+                                {
+                                    output.data = members;
+                                }
+                                else
+                                {
+                                    output.message = "NONE";
+                                }
+                            }
+                            else
+                            {
+                                output.message = "PERSON_NOT_FOUND";
+                                output.status = "FAILURE";
+                            }
+                            listOutputs.Add(output);
                             break;
 
 
@@ -73,16 +126,28 @@ namespace Family
                             string motherName = input.data["motherName"];
                             string childName = input.data["childName"];
                             string gender = input.data["gender"];
-                            Member member = new Member(childName, gender, "", motherName, "");
-                            string status = family.AddMember(motherName, member);
-                            Console.Write(status);
+                            bool _isMemberExists = family.IsMemberExists(motherName);
+                            if (_isMemberExists)
+                            {
+                                Member member = new Member(childName, gender, "", motherName, "");
+                                string message = family.AddMember(motherName, member);
+                                output.status = "SUCCESS";
+                                output.message = message;
+                            }
+                            else
+                            {
+                                output.status = "FAILURE";
+                                output.message = "PERSON_NOT_FOUND";
+                                output.data = null;
+                            }
+                            listOutputs.Add(output);
                             break;
                     }
                 }
             }
-            Console.ReadLine();
+            return listOutputs;
         }
-        
+
         private static List<InputIntruction> ParseInputIntructions(List<string> inputIntrucations)
         {
             List<InputIntruction> parsedInputInstructions = new List<InputIntruction>();
@@ -94,8 +159,8 @@ namespace Family
 
                     List<string> inputLine = input.Split(' ').ToList<string>();
                     string action = inputLine[0];
-                    inputIntruction.action = "GET_RELATIONSHIP";
-                    
+                    inputIntruction.action = action;
+
                     switch (action)
                     {
                         case "GET_RELATIONSHIP":
@@ -120,5 +185,7 @@ namespace Family
             }
             return parsedInputInstructions;
         }
+
+        
     }
 }
